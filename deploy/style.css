@@ -1,0 +1,42 @@
+body{
+    margin: 0;
+    padding: 0;
+
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+
+    background-color: rgb(22, 22, 22);
+}
+
+canvas{
+    background-color: white;
+    
+    border-radius: 10px;
+
+
+
+    box-shadow: 3px 3px 18px 4px rgba(255,255,255,0.21);
+    -webkit-box-shadow: 3px 3px 18px 4px rgba(255,255,255,0.21);
+    -moz-box-shadow: 3px 3px 18px 4px rgba(255,255,255,0.21);
+}
+
+.warning{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    color: rgb(33, 207, 255);
+    margin-left: 1em;
+
+    font-size: 20px;
+    letter-spacing: 2px;
+
+    font-family:'Courier New', Courier, monospace;
+    
+}
