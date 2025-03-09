@@ -108,7 +108,11 @@ const getRandomWords = (count, commonWords) => {
     for (let i = 0; i < count; i++) {
         const randomIndex = Math.floor(Math.random() * commonWords.length);
         if (commonWords[randomIndex].length < rows) {
-            randomWords.push(commonWords[randomIndex]);
+            if(randomWords.indexOf(commonWords[randomIndex]) == -1){
+                randomWords.push(commonWords[randomIndex]);
+            }else{
+                i--;
+            }
         } else {
             i--;
         }
@@ -120,6 +124,7 @@ const getRandomWords = (count, commonWords) => {
 let board = [];
 let worded_board = []
 let words = getRandomWords(words_count, word_array);
+const foundWordIndices = []
 
 
 
@@ -327,6 +332,10 @@ const drawTimer = () => {
             // window.reload();
         }
     }
+    if(timer == 0) {
+        alert("Game Over! You ran out of time!");
+            window.location.reload();
+    }
     highlightCancel(startPoint, square_size);
 }
 
@@ -388,6 +397,11 @@ canvas.addEventListener("mouseup", function (event) {
     if (checkHighlightValid(startPos, endPos)) {
         highlight(startPos, endPos, startPoint, square_size)
         highlights.push([startPos.copy(), endPos.copy()])
+        getHighlightedWord(startPos, endPos, worded_board)
+        if(foundWordIndices.length == words_count){
+            alert("Congratulations! You found all the words!");
+            window.location.reload();
+        }
     } else {
         highlightCancel(startPoint, square_size)
     }
@@ -418,6 +432,50 @@ document.addEventListener("keydown", function (event) {
         }
     }
 });
+
+const getHighlightedWord = (p1, p2, arr) => {
+    let x = p1.x;
+    let y = p1.y;
+    let dirx = 0;
+    let diry = 0;
+    if(p1.x > p2.x){
+        dirx = -1;
+    }else if(p1.x < p2.x){
+        dirx = 1;
+    }
+    
+    if(p1.y > p2.y){
+        diry = -1;
+    }else if(p1.y < p2.y){
+        diry = 1;
+    }
+
+    let length =  Math.max(Math.abs(p1.x - p2.x), Math.abs(p1.y - p2.y)) + 1;
+    console.log(arr);
+    let word = "";
+    for(let i = 0; i < length; i++){
+        console.log(x, y, dirx, diry, i, x + (dirx * i) , y + (diry * i));
+        let letter = arr[y + (diry * i)][x + (dirx * i)];
+        
+        word += letter;
+    }
+    
+    // console.log(word, words.indexOf(word), words);
+    if(words.indexOf(word) != -1){
+        foundWordIndices.push(words.indexOf(word));
+        const strikeThroughWords = words;
+        for(let i = 0; i < foundWordIndices.length; i++){
+            const wordLength = words[foundWordIndices[i]].length;
+            let newWord = "";
+            for(let j = 0; j < wordLength; j++){
+                newWord += "-";
+            }
+            strikeThroughWords[foundWordIndices[i]] = newWord;
+        }
+        drawTitle(strikeThroughWords.join(" - "), canvas.width / 2, canvas.height - 50, 20);
+
+    }
+}
 
 drawTimer();
 setInterval(drawTimer, 1000);
